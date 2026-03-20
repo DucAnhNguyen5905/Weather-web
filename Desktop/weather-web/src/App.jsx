@@ -1,11 +1,11 @@
-import React from "react";
-import Weather from "./components/Weather";
-const App = () => {
+import WeatherCard from "./components/WeatherCard";
+
+function App() {
   return (
     <div className="app">
-      <Weather />
+      <WeatherCard />
     </div>
   );
-};
+}
 
 export default App;

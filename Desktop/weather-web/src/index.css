@@ -2,10 +2,16 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  min-height: 100vh;
 }
 
 .app {
   min-height: 100vh;
   display: grid;
-  background: rgb(158, 146, 242);
+  place-items: center;
+  background: #d9d0f0;
 }
