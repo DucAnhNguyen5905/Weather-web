@@ -4,7 +4,9 @@ import "./Weather.css";
 import SearchBar from "./SearchBar";
 import WeatherDetails from "./WeatherDetails";
 import ForecastList from "./ForecastList";
+import ForecastChart from "./ForecastChart";
 import UnitToggle from "./UnitToggle";
+
 import CityMap from "./CityMap";
 import {
   searchLocations,
@@ -12,7 +14,7 @@ import {
   getForecastByCoords,
 } from "../api/weatherApi";
 
-const WeatherCard = () => {
+const WeatherCard = ({ setBackgroundClass }) => {
   const inputRef = useRef(null);
 
   const [unit, setUnit] = useState("metric");
@@ -40,6 +42,36 @@ const WeatherCard = () => {
   const [forecastData, setForecastData] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const getBackgroundClass = (condition, iconCode) => {
+    const isNight = iconCode.endsWith("n");
+
+    if (condition === "Clear") {
+      return isNight ? "bg-clear-night" : "bg-clear-day";
+    }
+
+    if (condition === "Clouds") {
+      return isNight ? "bg-clouds-night" : "bg-clouds-day";
+    }
+
+    if (
+      condition === "Rain" ||
+      condition === "Drizzle" ||
+      condition === "Thunderstorm"
+    ) {
+      return isNight ? "bg-rain-night" : "bg-rain-day";
+    }
+
+    if (condition === "Snow") {
+      return isNight ? "bg-snow-night" : "bg-snow-day";
+    }
+
+    if (condition === "Mist" || condition === "Fog" || condition === "Haze") {
+      return isNight ? "bg-mist-night" : "bg-mist-day";
+    }
+
+    return isNight ? "bg-default-night" : "bg-default";
+  };
 
   const buildForecastData = (forecastResponse) => {
     const groupedByDate = {};
@@ -76,7 +108,7 @@ const WeatherCard = () => {
           minTemp: Math.round(Math.min(...temperatures)),
           maxTemp: Math.round(Math.max(...temperatures)),
           icon: representativeItem.weather[0].icon,
-          condition: representativeItem.weather[0].main,
+          condition: representativeItem.weather[0].description,
           windSpeed: representativeItem.wind.speed,
           dt: representativeItem.dt,
         };
@@ -89,6 +121,10 @@ const WeatherCard = () => {
 
     const currentData = await getCurrentWeatherByCoords(lat, lon, selectedUnit);
     const forecastResponse = await getForecastByCoords(lat, lon, selectedUnit);
+
+    const weatherCondition = currentData.weather[0].main;
+    const weatherIcon = currentData.weather[0].icon;
+    setBackgroundClass(getBackgroundClass(weatherCondition, weatherIcon));
 
     const localDate = new Date(currentData.dt * 1000).toLocaleString("en-US", {
       weekday: "short",
@@ -104,7 +140,7 @@ const WeatherCard = () => {
       temperature: Math.round(currentData.main.temp),
       location: name || currentData.name,
       country: country || currentData.sys.country,
-      condition: currentData.weather[0].main,
+      condition: currentData.weather[0].description,
       feelsLike: Math.round(currentData.main.feels_like),
       pressure: currentData.main.pressure,
       icon: currentData.weather[0].icon,
@@ -152,6 +188,7 @@ const WeatherCard = () => {
       });
       setForecastData([]);
       setMapLocation({ lat: null, lon: null });
+      setBackgroundClass("bg-default");
     } finally {
       setLoading(false);
     }
@@ -205,6 +242,90 @@ const WeatherCard = () => {
     search(item.name, unit, item);
   };
 
+  const handleUseMyLocation = () => {
+    if (!navigator.geolocation) {
+      setError("Geolocation is not supported by your browser.");
+      return;
+    }
+
+    setError("");
+    setLoading(true);
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
+
+          const currentData = await getCurrentWeatherByCoords(
+            latitude,
+            longitude,
+            unit,
+          );
+          const forecastResponse = await getForecastByCoords(
+            latitude,
+            longitude,
+            unit,
+          );
+
+          const weatherCondition = currentData.weather[0].main;
+          const weatherIcon = currentData.weather[0].icon;
+          setBackgroundClass(getBackgroundClass(weatherCondition, weatherIcon));
+
+          const localDate = new Date(currentData.dt * 1000).toLocaleString(
+            "en-US",
+            {
+              weekday: "short",
+              month: "short",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            },
+          );
+
+          setWeatherData({
+            humidity: currentData.main.humidity,
+            windSpeed: currentData.wind.speed,
+            temperature: Math.round(currentData.main.temp),
+            location: currentData.name,
+            country: currentData.sys.country,
+            condition: currentData.weather[0].description,
+            feelsLike: Math.round(currentData.main.feels_like),
+            pressure: currentData.main.pressure,
+            icon: currentData.weather[0].icon,
+            dateTime: localDate,
+          });
+
+          setForecastData(buildForecastData(forecastResponse));
+          setMapLocation({ lat: latitude, lon: longitude });
+
+          const realLocationObj = {
+            lat: latitude,
+            lon: longitude,
+            name: currentData.name,
+            country: currentData.sys.country,
+          };
+
+          setLastSelectedLocation(realLocationObj);
+          setLastSearchedCity(currentData.name);
+
+          if (inputRef.current) {
+            inputRef.current.value = `${currentData.name}, ${currentData.sys.country}`;
+          }
+
+          setSuggestions([]);
+        } catch {
+          setError("Unable to fetch weather for your current location.");
+        } finally {
+          setLoading(false);
+        }
+      },
+      () => {
+        setError("Location access denied or unavailable.");
+        setLoading(false);
+      },
+    );
+  };
+
   useEffect(() => {
     search("London", unit);
   }, []);
@@ -218,11 +339,14 @@ const WeatherCard = () => {
           <SearchBar
             inputRef={inputRef}
             onSearch={handleSearch}
+            onUseLocation={handleUseMyLocation}
             suggestions={suggestions}
             onSelectSuggestion={handleSelectSuggestion}
             onInputChange={handleInputChange}
           />
-          <UnitToggle unit={unit} onChangeUnit={handleChangeUnit} />
+          <div className="top-actions">
+            <UnitToggle unit={unit} onChangeUnit={handleChangeUnit} />
+          </div>
         </div>
       </div>
 
@@ -273,6 +397,8 @@ const WeatherCard = () => {
       <div className="forecast-panel">
         <ForecastList forecastData={forecastData} unit={unit} />
       </div>
+
+      <ForecastChart forecastData={forecastData} unit={unit} />
 
       <CityMap
         lat={mapLocation.lat}

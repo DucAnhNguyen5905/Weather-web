@@ -7,14 +7,8 @@
 
 body {
   min-height: 100vh;
-  background: linear-gradient(to bottom, #8ec5ff, #4d8df7);
 }
 
 #root {
   min-height: 100vh;
-}
-
-.app {
-  min-height: 100vh;
-  padding: 24px 16px 40px;
 }

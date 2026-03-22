@@ -1,66 +1,138 @@
+/* WRAPPER  APP*/
+.app {
+  min-height: 100vh;
+  padding: 24px 16px 40px;
+  transition: background 0.5s ease;
+}
+
+.app.bg-default {
+  background: linear-gradient(to bottom, #8ec5ff, #4d8df7);
+}
+
+.app.bg-default-night {
+  background: linear-gradient(to bottom, #243b55, #141e30);
+}
+
+.app.bg-clear-day {
+  background: linear-gradient(to bottom, #87ceeb, #fdd76e);
+}
+
+.app.bg-clear-night {
+  background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+}
+
+.app.bg-clouds-day {
+  background: linear-gradient(to bottom, #b7c9d6, #e2ebf0);
+}
+
+.app.bg-clouds-night {
+  background: linear-gradient(to bottom, #3a4a5a, #1e2a38);
+}
+
+.app.bg-rain-day {
+  background: linear-gradient(to bottom, #5c7fa3, #8fb3d9);
+}
+
+.app.bg-rain-night {
+  background: linear-gradient(to bottom, #1f2a38, #31475e);
+}
+
+.app.bg-snow-day {
+  background: linear-gradient(to bottom, #dfefff, #ffffff);
+}
+
+.app.bg-snow-night {
+  background: linear-gradient(to bottom, #7f8c99, #cfd9df);
+}
+
+.app.bg-mist-day {
+  background: linear-gradient(to bottom, #cfd8dc, #eceff1);
+}
+
+.app.bg-mist-night {
+  background: linear-gradient(to bottom, #4b5b67, #2f3e46);
+}
 .weather-page {
   width: 100%;
   max-width: 1000px;
   margin: 40px auto;
 }
 
+/* 
+   CARD/PANEL COMMON
+   search, current, forecast, chart, map
+    */
 .search-panel,
 .current-panel,
 .forecast-panel,
-.map-panel {
-  background: #ffffff;
-  border-radius: 8px;
+.map-panel,
+.chart-panel {
+  background: #f8fbf3;
+  border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
   padding: 26px;
   margin-bottom: 16px;
 }
 
+/* 
+   SearchBar left + unit toggle right
+   */
 .search-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 14px;
   flex-wrap: wrap;
 }
 
+/* Search wrapper  input, button, dropdown  */
 .search-wrapper {
   position: relative;
   flex: 1;
   min-width: 280px;
 }
 
+/* search */
 .search-row {
   display: flex;
   justify-content: center;
   gap: 8px;
   width: 100%;
+  flex-wrap: wrap;
 }
 
+/* INPUT CITY NAME*/
 .search-input {
   width: 260px;
-  height: 34px;
+  height: 40px;
   border: 1px solid #d4d4d4;
-  border-radius: 4px;
+  border-radius: 6px;
   padding: 0 12px;
   font-size: 16px;
   outline: none;
+  background: #ffffff;
 }
 
-.search-button {
-  height: 34px;
+/*  SEARCH BUTTON + USE LOCATION */
+.search-button,
+.location-button {
+  height: 40px;
   padding: 0 16px;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   background: #4d8df7;
   color: white;
   font-size: 14px;
   cursor: pointer;
+  font-weight: 600;
 }
 
-.search-button:hover {
+.search-button:hover,
+.location-button:hover {
   background: #3c7ae0;
 }
 
+/* DROPDOWN */
 .suggestions-list {
   position: absolute;
   top: calc(100% + 8px);
@@ -105,6 +177,15 @@
   color: #6b7280;
 }
 
+/* KHU VỰC ACTION BÊN PHẢI*/
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* UNIT TOGGLE (°C / °F) */
 .unit-toggle {
   display: flex;
   gap: 8px;
@@ -131,6 +212,7 @@
   opacity: 0.9;
 }
 
+/* CURRENT WEATHER HEADER */
 .city-title {
   text-align: center;
   font-size: 18px;
@@ -153,6 +235,7 @@
   margin-top: 10px;
 }
 
+/* icon + temp + condition*/
 .current-main {
   display: flex;
   justify-content: center;
@@ -160,6 +243,9 @@
   gap: 22px;
   margin-top: 26px;
   margin-bottom: 28px;
+  background: #d7d4d4;
+  padding: 18px;
+  border-radius: 0;
 }
 
 .current-left {
@@ -189,6 +275,7 @@
   font-weight: 600;
   color: #374151;
   margin: 0;
+  text-transform: lowercase;
 }
 
 .feels-like {
@@ -197,6 +284,7 @@
   margin-top: 4px;
 }
 
+/* WEATHER DETAILS Wind / Humidity / Pressure*/
 .weather-details-row {
   display: flex;
   justify-content: space-around;
@@ -221,6 +309,9 @@
   font-weight: 500;
 }
 
+/* =========================
+   FORECAST
+   ========================= */
 .forecast-heading {
   text-align: center;
   margin: 0 0 18px;
@@ -235,12 +326,14 @@
   gap: 16px;
 }
 
+/* Card forecast:
+  */
 .forecast-item {
-  border: 1px solid #e5e7eb;
+  border: 1px solid #d6dee8;
   border-radius: 12px;
   padding: 18px 12px;
   text-align: center;
-  background: linear-gradient(to bottom, #ffffff, #f8fbff);
+  background: linear-gradient(to bottom, #eef4fb, #dfe9f5);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition:
     transform 0.2s ease,
@@ -265,16 +358,22 @@
   margin: 4px 0 10px;
 }
 
+/* Icon forecast  */
 .forecast-item-icon {
   width: 58px;
   height: 58px;
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: 50%;
+  padding: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .forecast-item-condition {
   font-size: 14px;
   color: #374151;
   font-weight: 600;
-  margin: 2px 0 10px;
+  margin: 8px 0 10px;
+  text-transform: lowercase;
 }
 
 .forecast-temp-row {
@@ -302,6 +401,31 @@
   margin: 0;
 }
 
+/* =========================
+   CHART
+   ========================= */
+.chart-heading {
+  text-align: center;
+  margin: 0 0 16px;
+  color: #374151;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.chart-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.chart-container {
+  width: 100%;
+  min-width: 320px;
+  height: 320px;
+}
+
+/* =========================
+   MAP
+   ========================= */
 .map-heading {
   text-align: center;
   margin: 0 0 16px;
@@ -317,24 +441,35 @@
   overflow: hidden;
 }
 
+/* =========================
+   ERROR / LOADING
+   ========================= */
 .error-message {
   text-align: center;
   color: #dc2626;
   margin-bottom: 12px;
+  font-weight: 600;
 }
 
 .loading-message {
   text-align: center;
   color: #2563eb;
   margin-bottom: 12px;
+  font-weight: 600;
 }
 
+/* =========================
+   RESPONSIVE: TABLET SMALL
+   ========================= */
 @media (max-width: 1100px) {
   .forecast-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
+/* =========================
+   RESPONSIVE: MOBILE / TABLET
+   ========================= */
 @media (max-width: 768px) {
   .search-header {
     flex-direction: column;
@@ -346,6 +481,10 @@
   }
 
   .unit-toggle {
+    justify-content: center;
+  }
+
+  .top-actions {
     justify-content: center;
   }
 
@@ -367,18 +506,40 @@
     gap: 12px;
   }
 
+  /* input ở hàng trên và  2 nút ở hàng dưới */
   .search-row {
-    flex-direction: column;
-    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
     width: 100%;
   }
 
   .search-input {
     width: 100%;
     max-width: 320px;
+    flex: 0 0 100%;
+  }
+
+  .search-button,
+  .location-button {
+    flex: 1;
+    max-width: 156px;
+  }
+
+  .chart-panel {
+    padding: 18px 14px;
+  }
+
+  .chart-container {
+    min-width: 300px;
+    height: 300px;
   }
 }
 
+/* =========================
+   RESPONSIVE: MOBILE small
+   ========================= */
 @media (max-width: 576px) {
   .forecast-grid {
     grid-template-columns: 1fr;

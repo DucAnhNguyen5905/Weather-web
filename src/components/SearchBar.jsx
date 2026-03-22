@@ -1,15 +1,12 @@
-import { useState } from "react";
-
 const SearchBar = ({
   inputRef,
   onSearch,
+  onUseLocation,
   suggestions,
   onSelectSuggestion,
   onInputChange,
 }) => {
-  const [isFocused, setIsFocused] = useState(false);
-
-  const showSuggestions = isFocused && suggestions && suggestions.length > 0;
+  const hasSuggestions = suggestions && suggestions.length > 0;
 
   return (
     <div className="search-wrapper">
@@ -21,17 +18,18 @@ const SearchBar = ({
           className="search-input"
           onChange={(e) => onInputChange(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && onSearch()}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => {
-            setTimeout(() => setIsFocused(false), 150);
-          }}
         />
+
         <button className="search-button" onClick={onSearch}>
           Search
         </button>
+
+        <button className="location-button" onClick={onUseLocation}>
+          Use My Location
+        </button>
       </div>
 
-      {showSuggestions && (
+      {hasSuggestions && (
         <ul className="suggestions-list">
           {suggestions.map((item, index) => (
             <li
